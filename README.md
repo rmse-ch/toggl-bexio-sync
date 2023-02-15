@@ -1,4 +1,11 @@
-# TogglBexioSync
+# Toggl Bexio Syncronisation
+
+The idea of this project is just to have the possibility to take certain toggl time entries and copy them into the swiss software bexio.
+
+This is just a project mainly for myself, as I use Toggl all the time and not always with Bexio. And also I like the toggl app
+ways more than the Bexio App (but naturally Toggl is just doing one thing).
+
+## Development
 
 To start your Phoenix server:
 
