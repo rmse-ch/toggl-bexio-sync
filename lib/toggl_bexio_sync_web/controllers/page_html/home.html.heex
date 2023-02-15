@@ -8,7 +8,7 @@
 <%= if @current_user do %>
   <p class="pb-3">
     Welcome back, <%= @current_user.email %>. You can continue to
-    <.link href={~p"/sync"} class="text-brand">Syncing</.link>.
+    <.link href={~p"/settings"} class="text-brand">Settings</.link> or <.link href={~p"/sync"} class="text-brand">start syncing</.link>.
   </p>
 <% else %>
   <p class="pb-3">

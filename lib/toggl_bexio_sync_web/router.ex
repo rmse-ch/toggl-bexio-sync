@@ -23,6 +23,12 @@ defmodule TogglBexioSyncWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/", TogglBexioSyncWeb do
+    pipe_through :api
+
+    post "/toggl-webhook", TogglWebhookController, :webhook
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", TogglBexioSyncWeb do
   #   pipe_through :api

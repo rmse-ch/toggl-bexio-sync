@@ -7,8 +7,8 @@ defmodule TogglBexioSyncWeb.Strategy.Bexio.OAuth do
   To add your `client_id` and `client_secret` include these values in your configuration.
 
       config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio.OAuth,
-        client_id: System.get_env("BEXIO_CLIENT_ID"),
-        client_secret: System.get_env("BEXIO_CLIENT_SECRET")
+        client_id: System.get_env("BEXIO_TOGGL_CLIENT_ID"),
+        client_secret: System.get_env("BEXIO_TOGGL_CLIENT_SECRET")
   """
   use OAuth2.Strategy
 

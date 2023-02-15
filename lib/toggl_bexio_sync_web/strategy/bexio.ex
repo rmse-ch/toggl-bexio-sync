@@ -14,8 +14,8 @@ defmodule TogglBexioSyncWeb.Strategy.Bexio do
   Then include the configuration for bexio.
 
       config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio.OAuth,
-        client_id: System.get_env("BEXIO_CLIENT_ID"),
-        client_secret: System.get_env("BEXIO_CLIENT_SECRET")
+        client_id: System.get_env("BEXIO_TOGGL_CLIENT_ID"),
+        client_secret: System.get_env("BEXIO_TOGGL_CLIENT_SECRET")
 
   If you haven't already, create a pipeline and setup routes for your callback handler
 

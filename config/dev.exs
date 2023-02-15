@@ -80,5 +80,5 @@ config :swoosh, :api_client, false
 
 # Config for Codespaces / local development
 config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio.OAuth,
-  client_id: System.get_env("BEXIO_CLIENT_ID"),
-  client_secret: System.get_env("BEXIO_CLIENT_SECRET")
+  client_id: System.get_env("BEXIO_TOGGL_CLIENT_ID"),
+  client_secret: System.get_env("BEXIO_TOGGL_CLIENT_SECRET")
