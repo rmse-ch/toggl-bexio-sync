@@ -1,0 +1,118 @@
+# TODO: JWK for validation of the tokens
+# TODO: how could I write a test for this??
+defmodule TogglBexioSyncWeb.Strategy.Bexio.OAuth do
+  @moduledoc """
+  An implementation of OAuth2 for bexio.
+
+  To add your `client_id` and `client_secret` include these values in your configuration.
+
+      config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio.OAuth,
+        client_id: System.get_env("BEXIO_CLIENT_ID"),
+        client_secret: System.get_env("BEXIO_CLIENT_SECRET")
+  """
+  use OAuth2.Strategy
+
+  @defaults [
+    strategy: __MODULE__,
+    site: "https://idp.bexio.com/.well-known/openid-configuration",
+    authorize_url: "https://idp.bexio.com/authorize",
+    token_url: "https://idp.bexio.com/token",
+    userinfo_url: "https://idp.bexio.com/userinfo",
+    token_method: :post,
+    serializers: %{"application/json" => Jason}
+  ]
+
+  @doc """
+  Construct a client for requests to Bexio.
+
+  Optionally include any OAuth2 options here to be merged with the defaults.
+
+      TogglBexioSyncWeb.Strategy.Bexio.OAuth.client(redirect_uri: "http://localhost:4000/auth/bexio/callback")
+
+  This will be setup automatically for you in `TogglBexioSyncWeb.Strategy.Bexio`.
+  These options are only useful for usage outside the normal callback phase of Ueberauth.
+  """
+  def client(opts \\ []) do
+    client_opts =
+      @defaults
+      |> Keyword.merge(config())
+      |> Keyword.merge(opts)
+
+    OAuth2.Client.new(client_opts)
+  end
+
+  # Fetches configuration for `TogglBexioSyncWeb.Strategy.Bexio.OAuth` Strategy from `config.exs`
+  # Also checks if at least `client_id` and `client_secret` are set, raising an error if not.
+  defp config() do
+    :ueberauth
+    |> Application.fetch_env!(TogglBexioSyncWeb.Strategy.Bexio.OAuth)
+    |> check_config_key_exists(:client_id)
+    |> check_config_key_exists(:client_secret)
+  end
+
+  @doc """
+  Provides the authorize url for the request phase of Ueberauth. No need to call this usually.
+  """
+  def authorize_url!(params \\ [], opts \\ []) do
+    opts
+    |> client
+    |> OAuth2.Client.authorize_url!(params)
+  end
+
+  @doc """
+  Fetches `userinfo_url` for `TogglBexioSyncWeb.Strategy.Bexio.OAuth` Strategy from `config.exs`.
+  It will be used to get user profile information after an successful authentication.
+  """
+  def userinfo_url() do
+    @defaults
+    |> Keyword.merge(config())
+    |> Keyword.get(:userinfo_url)
+  end
+
+  def get(token, url, headers \\ [], opts \\ []) do
+    [token: token]
+    |> client
+    |> put_param("access_token", token)
+    |> OAuth2.Client.get(url, headers, opts)
+  end
+
+  def get_token!(params \\ [], options \\ []) do
+    headers = Keyword.get(options, :headers, [])
+    options = Keyword.get(options, :options, [])
+    client_options = Keyword.get(options, :client_options, [])
+    client = OAuth2.Client.get_token!(client(client_options), params, headers, options)
+    client.token
+  end
+
+  # Strategy Callbacks
+
+  def authorize_url(client, params) do
+    client
+    |> put_param("response_type", "code")
+    |> put_param("redirect_uri", client().redirect_uri)
+
+    OAuth2.Strategy.AuthCode.authorize_url(client, params)
+  end
+
+  def get_token(client, params, headers) do
+    client
+    |> put_param("client_id", client().client_id)
+    |> put_param("client_secret", client().client_secret)
+    |> put_param("grant_type", "authorization_code")
+    |> put_param("redirect_uri", client().redirect_uri)
+    |> put_header("Accept", "application/json")
+    |> OAuth2.Strategy.AuthCode.get_token(params, headers)
+  end
+
+  defp check_config_key_exists(config, key) when is_list(config) do
+    unless Keyword.has_key?(config, key) do
+      raise "#{inspect(key)} missing from config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio"
+    end
+
+    config
+  end
+
+  defp check_config_key_exists(_, _) do
+    raise "Config :ueberauth, TogglBexioSyncWeb.Strategy.Bexio is not a keyword list, as expected"
+  end
+end

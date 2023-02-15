@@ -1,0 +1,35 @@
+<h1 class="text-xl font-bold pb-6">Toggl Bexio Sync</h1>
+
+<p class="pb-3">This is a simple demonstration app for using the API with Bexio.</p>
+<p class="pb-3">
+  It will allow to sync The Time Entries from Toggl to Bexio (was just a usecase also for myself, as I still like the Toggl App a lot more).
+</p>
+
+<%= if @current_user do %>
+  <p class="pb-3">
+    Welcome back, <%= @current_user.email %>. You can continue to
+    <.link href={~p"/sync"} class="text-brand">Syncing</.link>.
+  </p>
+<% else %>
+  <p class="pb-3">
+    To get started, please
+    <.link href={~p"/auth/bexio"} class="text-brand">log in using bexio</.link>. The application will ask for the following rights:
+  </p>
+  <ul class="pb-3 list-disc">
+    <li>
+      Offline Access: This is needed to allow the webhook from Toggl to update the Bexio Time Entries.
+    </li>
+    <li>
+      Project Show: The application needs to have read access to the projects so the projects between Toggl and Bexio can be synced.
+    </li>
+    <li>
+      Time Entries Edit: The application needs to be able to write time entries to sync from Toggl to Bexio.
+    </li>
+  </ul>
+<% end %>
+<p class="pb-3">What is not possible (and may come later)?</p>
+<ul class="pb-3 list-disc">
+  <li>Sync Time Entries from Bexio to Toggl.</li>
+  <li>Create dynamic projects in Bexio.</li>
+  <li>Big graphical overview (high on my to-do list).</li>
+</ul>
